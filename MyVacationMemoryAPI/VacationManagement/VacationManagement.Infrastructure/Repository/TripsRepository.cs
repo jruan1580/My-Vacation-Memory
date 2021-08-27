@@ -11,7 +11,8 @@ namespace VacationManagement.Infrastructure.Repository
     {
         Task AddTrip(Trip newTrip);
         Task<Trip> GetTripById(long id);
-        Task<List<Trip>> GetTrips(int page, int offset);
+        Task<int> GetTotalTripCount(string keyword = "");
+        Task<List<Trip>> GetTripsByKeyword(int page, int offset, string keyword = "");
         Task UpdateTrip(long id, string name, string desc, string dest, DateTime start, DateTime? end, short rating);
     }
 
@@ -25,13 +26,42 @@ namespace VacationManagement.Infrastructure.Repository
             }
         }
 
-        public async Task<List<Trip>> GetTrips(int page, int offset)
+        public async Task<int> GetTotalTripCount(string keyword = "")
         {
             using (var context = new MyVacationMemoryContext())
             {
-                var trips = context.Trips.Skip((page - 1) * offset).Take(offset);
+                if (string.IsNullOrEmpty(keyword))
+                {
+                    return await context.Trips.CountAsync();
+                }
 
-                return await trips.ToListAsync();
+                return await context.Trips
+                            .Where(t => t.TripName.Contains(keyword)
+                                || t.Destination.Contains(keyword)
+                                || t.TripDescription.Contains(keyword)
+                            ).CountAsync();
+            }
+        }
+
+        public async Task<List<Trip>> GetTripsByKeyword(int page, int offset, string keyword = "")
+        {
+            using (var context = new MyVacationMemoryContext())
+            {
+                if (string.IsNullOrEmpty(keyword))
+                {
+                    return await context.Trips.Skip((page - 1) * offset).Take(offset).ToListAsync();
+                }
+
+                var trips = await context.Trips
+                                .Where(t => t.TripName.Contains(keyword)
+                                    || t.Destination.Contains(keyword)
+                                    || t.TripDescription.Contains(keyword)
+                                 )
+                                .Skip((page - 1) * offset)
+                                .Take(offset)
+                                .ToListAsync();
+
+                return trips;
             }
         }
 
