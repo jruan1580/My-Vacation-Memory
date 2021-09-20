@@ -1,12 +1,16 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using GraphQL;
+using GraphQL.Server;
+using GraphQL.Types;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using VacationManagement.API.Types;
+using VacationManagement.Domain.Mapper;
+using VacationManagement.Domain.Services;
 using VacationManagement.Infrastructure.Repository;
 
 namespace VacationManagement.API
@@ -17,26 +21,46 @@ namespace VacationManagement.API
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ITripsRepository, TripsRepository>();
-        }
+            services.AddAutoMapper(typeof(MapperProfile));
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+            services.AddScoped<IDocumentExecuter, DocumentExecuter>();
+            services.AddSingleton<ITripsRepository, TripsRepository>();
+            services.AddScoped<IMyTripsService, MyTripsService>();
+            services.AddScoped<TripType>();
+            services.AddScoped<AddTripInputType>();
+            services.AddScoped<VacationManagementQueryType>();
+            services.AddScoped<VacationManagementMutationType>();
+            services.AddScoped<VacationManagementSchema>();
+
+            services.AddGraphQL()
+                .AddSystemTextJson()
+                .AddErrorInfoProvider(opt => opt.ExposeExceptionStackTrace = true);
+
+            // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+           
+            app.UseGraphQL<VacationManagementSchema>();
 
-            app.UseRouting();
+            app.UseGraphQLAltair("/");
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
-            });
+
+            //app.UseHttpsRedirection();
+
+            //app.UseRouting();
+
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapGet("/", async context =>
+            //    {
+            //        await context.Response.WriteAsync("Hello World!");
+            //    });
+            //});
         }
     }
 }

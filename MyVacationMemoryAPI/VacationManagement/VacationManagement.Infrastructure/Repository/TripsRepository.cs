@@ -9,9 +9,10 @@ namespace VacationManagement.Infrastructure.Repository
 {
     public interface ITripsRepository
     {
-        Task AddTrip(Trip newTrip);
+        Task<Trip> AddTrip(Trip newTrip);
         Task<Trip> GetTripById(long id);
-        Task<List<Trip>> GetTrips(int page, int offset);
+        Task<int> GetTotalTripCount(string keyword = "");
+        Task<List<Trip>> GetTripsByKeyword(int page, int offset, string keyword = "");
         Task UpdateTrip(long id, string name, string desc, string dest, DateTime start, DateTime? end, short rating);
     }
 
@@ -25,22 +26,51 @@ namespace VacationManagement.Infrastructure.Repository
             }
         }
 
-        public async Task<List<Trip>> GetTrips(int page, int offset)
+        public async Task<int> GetTotalTripCount(string keyword = "")
         {
             using (var context = new MyVacationMemoryContext())
             {
-                var trips = context.Trips.Skip((page - 1) * offset).Take(offset);
+                if (string.IsNullOrEmpty(keyword))
+                {
+                    return await context.Trips.CountAsync();
+                }
 
-                return await trips.ToListAsync();
+                return await context.Trips
+                            .Where(t => t.TripName.Contains(keyword)
+                                || t.Destination.Contains(keyword)
+                                || t.TripDescription.Contains(keyword)
+                            ).CountAsync();
             }
         }
 
-        public async Task AddTrip(Trip newTrip)
+        public async Task<List<Trip>> GetTripsByKeyword(int page, int offset, string keyword = "")
         {
             using (var context = new MyVacationMemoryContext())
             {
-                var existingTrip = await context.Trips.FirstOrDefaultAsync(t => t.TripName.Equals(newTrip.TripName.Trim(), StringComparison.InvariantCultureIgnoreCase)
-                                            && t.Destination.Equals(newTrip.Destination.Trim(), StringComparison.InvariantCultureIgnoreCase)
+                if (string.IsNullOrEmpty(keyword))
+                {
+                    return await context.Trips.Skip((page - 1) * offset).Take(offset).ToListAsync();
+                }
+
+                var trips = await context.Trips
+                                .Where(t => t.TripName.Contains(keyword)
+                                    || t.Destination.Contains(keyword)
+                                    || t.TripDescription.Contains(keyword)
+                                 )
+                                .Skip((page - 1) * offset)
+                                .Take(offset)
+                                .ToListAsync();
+
+                return trips;
+            }
+        }
+
+        public async Task<Trip> AddTrip(Trip newTrip)
+        {
+            using (var context = new MyVacationMemoryContext())
+            {
+                var existingTrip = await context.Trips.FirstOrDefaultAsync(t => t.TripName.ToLower().Trim().Equals(newTrip.TripName.ToLower().Trim())
+                                            && t.Destination.ToLower().Trim().Equals(newTrip.Destination.ToLower().Trim())
                                             && t.StartDate == newTrip.StartDate
                                             && t.EndDate == newTrip.EndDate);
                 if (existingTrip != null)
@@ -51,6 +81,8 @@ namespace VacationManagement.Infrastructure.Repository
                 context.Trips.Add(newTrip);
 
                 await context.SaveChangesAsync();
+
+                return await GetTripById(newTrip.Id);
             }
         }
 
