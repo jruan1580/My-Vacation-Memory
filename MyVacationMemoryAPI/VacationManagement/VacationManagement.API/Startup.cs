@@ -27,10 +27,14 @@ namespace VacationManagement.API
             services.AddSingleton<ITripsRepository, TripsRepository>();
             services.AddScoped<IMyTripsService, MyTripsService>();
             services.AddScoped<TripType>();
+            services.AddScoped<AddTripInputType>();
             services.AddScoped<VacationManagementQueryType>();
+            services.AddScoped<VacationManagementMutationType>();
             services.AddScoped<VacationManagementSchema>();
 
-            services.AddGraphQL().AddSystemTextJson();
+            services.AddGraphQL()
+                .AddSystemTextJson()
+                .AddErrorInfoProvider(opt => opt.ExposeExceptionStackTrace = true);
 
             // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         }

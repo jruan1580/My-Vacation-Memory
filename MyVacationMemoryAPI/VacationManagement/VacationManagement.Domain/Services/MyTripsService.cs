@@ -12,7 +12,7 @@ namespace VacationManagement.Domain.Services
 {
     public interface IMyTripsService
     {
-        Task AddNewTrip(string name, string desc, string dest, DateTime start, DateTime? end, short rating);
+        Task<MyTrip> AddNewTrip(string name, string desc, string dest, DateTime start, DateTime? end, short rating);
         Task<MyTrip> GetMyTripById(long id);
         Task<List<MyTrip>> GetMyTripsByKeywordAndPage(int page, int offset, string keyword = "");
         Task<int> GetTotalTrips(string keyword = "");
@@ -54,7 +54,7 @@ namespace VacationManagement.Domain.Services
             return await _tripsRepository.GetTotalTripCount(keyword);
         }
 
-        public async Task AddNewTrip(string name, string desc, string dest, DateTime start, DateTime? end, short rating)
+        public async Task<MyTrip> AddNewTrip(string name, string desc, string dest, DateTime start, DateTime? end, short rating)
         {
             var newTrip = new MyTrip()
             {
@@ -66,7 +66,9 @@ namespace VacationManagement.Domain.Services
                 Rating = rating
             };
 
-            await _tripsRepository.AddTrip(_mapper.Map<Trip>(newTrip));
+            var trip = await _tripsRepository.AddTrip(_mapper.Map<Trip>(newTrip));
+
+            return _mapper.Map<MyTrip>(trip);
         }
 
         public async Task UpdateTrip(long id, string name, string desc, string dest, DateTime start, DateTime? end, short rating)

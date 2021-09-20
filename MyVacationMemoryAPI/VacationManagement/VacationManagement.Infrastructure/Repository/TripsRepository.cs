@@ -9,7 +9,7 @@ namespace VacationManagement.Infrastructure.Repository
 {
     public interface ITripsRepository
     {
-        Task AddTrip(Trip newTrip);
+        Task<Trip> AddTrip(Trip newTrip);
         Task<Trip> GetTripById(long id);
         Task<int> GetTotalTripCount(string keyword = "");
         Task<List<Trip>> GetTripsByKeyword(int page, int offset, string keyword = "");
@@ -65,12 +65,12 @@ namespace VacationManagement.Infrastructure.Repository
             }
         }
 
-        public async Task AddTrip(Trip newTrip)
+        public async Task<Trip> AddTrip(Trip newTrip)
         {
             using (var context = new MyVacationMemoryContext())
             {
-                var existingTrip = await context.Trips.FirstOrDefaultAsync(t => t.TripName.Equals(newTrip.TripName.Trim(), StringComparison.InvariantCultureIgnoreCase)
-                                            && t.Destination.Equals(newTrip.Destination.Trim(), StringComparison.InvariantCultureIgnoreCase)
+                var existingTrip = await context.Trips.FirstOrDefaultAsync(t => t.TripName.ToLower().Trim().Equals(newTrip.TripName.ToLower().Trim())
+                                            && t.Destination.ToLower().Trim().Equals(newTrip.Destination.ToLower().Trim())
                                             && t.StartDate == newTrip.StartDate
                                             && t.EndDate == newTrip.EndDate);
                 if (existingTrip != null)
@@ -81,6 +81,8 @@ namespace VacationManagement.Infrastructure.Repository
                 context.Trips.Add(newTrip);
 
                 await context.SaveChangesAsync();
+
+                return await GetTripById(newTrip.Id);
             }
         }
 

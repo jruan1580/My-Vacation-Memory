@@ -13,6 +13,7 @@ namespace VacationManagement.API.Types
         public VacationManagementSchema(IMyTripsService myTripsService, IServiceProvider resolver) : base(resolver)
         {
             Query = new VacationManagementQueryType(myTripsService);
+            Mutation = new VacationManagementMutationType(myTripsService);
         }
     }
 }
