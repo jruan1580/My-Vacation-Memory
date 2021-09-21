@@ -1,17 +1,12 @@
-import Container from "react-bootstrap/Container";
-import NavigationBar from "./NavigationBar";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
+import Container from "react-bootstrap/Container";
 
-function App() {
-  return (
-    <>
-      {/* <NavigationBar /> */}
-      {/* <Container fluid>
 
-                  
-      </Container> */}
-       <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+function NavigationBar(){
+    return(
+        <>
+            <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
                 <Container>
                     <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
@@ -29,8 +24,8 @@ function App() {
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
-    </>    
-  );
+        </>
+    );
 }
 
-export default App;
+export default NavigationBar;
