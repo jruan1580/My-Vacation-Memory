@@ -36,20 +36,31 @@ namespace VacationManagement.API
                 .AddSystemTextJson()
                 .AddErrorInfoProvider(opt => opt.ExposeExceptionStackTrace = true);
 
-            // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("DefaultPolicy", builder =>
+                {
+                    builder.AllowAnyHeader()
+                           .AllowAnyMethod()
+                           .WithOrigins("http://localhost:3000");
+                });
+            });
         }
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-           
+
+            app.UseCors("DefaultPolicy");
+
             app.UseGraphQL<VacationManagementSchema>();
 
             app.UseGraphQLAltair("/");
-
-
+         
             //app.UseHttpsRedirection();
 
             //app.UseRouting();

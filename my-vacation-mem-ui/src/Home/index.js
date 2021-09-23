@@ -1,11 +1,19 @@
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Table from "react-bootstrap/Table"
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { GET_TRIPS } from "../GqlQueries/TripsQuery";
+import { useQuery } from "@apollo/client";
 
-function Home(){
-    const [trips, setTrips] = useState([]);
+function Home(){    
+    const offset = 10;
+    const [page, setPage] = useState(1);    
+    const [keyword, setKeyword] = useState("");
 
+    const { loading, error, data } = useQuery(GET_TRIPS, {
+        variables : { page, offset, keyword }
+    });   
+    
     return(
         <>
             <Row>
@@ -24,17 +32,18 @@ function Home(){
                     </thead>
                     <tbody>
                         {
-                            trips.map(t => {
-                                return (
-                                   <tr key={t.id}>
-                                       <td>{t.name}</td>
-                                       <td>{t.destination}</td>
-                                       <td>{t.start}</td>
-                                       <td>{t.end}</td>
-                                       <td>{t.rating}</td>
-                                   </tr>
-                                )
-                            })
+                            (!loading && error === undefined) &&
+                                (data.trips.map(t => {
+                                    return (
+                                    <tr key={t.id}>
+                                        <td>{t.name}</td>
+                                        <td>{t.destination}</td>
+                                        <td>{t.start}</td>
+                                        <td>{t.end}</td>
+                                        <td>{t.rating}</td>
+                                    </tr>
+                                    )
+                                }))
                         }
                     </tbody>
                 </Table>
