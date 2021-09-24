@@ -5,10 +5,12 @@ export const GET_TRIPS = gql`
         trips(page: $page, offset: $offset, keyword: $keyword ){
             id,
             name,
+            destination,
             start,
             end,
             rating
-        }
+        },
+        total(keyword: $keyword)
   }
 `;
 
