@@ -6,35 +6,54 @@ import Pagination  from "react-bootstrap/Pagination";
 import { useEffect, useState } from "react";
 import { GET_TRIPS } from "../GqlQueries/TripsQuery";
 import { useQuery } from "@apollo/client";
+import Button from "react-bootstrap/Button";
+import AddTripModal from "./addTrips";
 
 function Home(){    
-    const offset = 5;
+    const offset = 10;
     const [page, setPage] = useState(1);    
     const [keyword, setKeyword] = useState("");
+    const [showAddTrip, setShowAddTrip] = useState(false);
 
     const { loading, error, data, refetch } = useQuery(GET_TRIPS, {
         variables : { page, offset, keyword }
     });   
 
+    useEffect(() => {
+        setPage(1);
+    }, [keyword]);
+
+    useEffect(() =>{
+        if (!showAddTrip){
+            refetch();
+        }
+    }, [showAddTrip, refetch]);
+
+    useEffect(() => {
+        refetch();
+    }, [page, refetch])
+
     const searchChanged = (e) =>{
-        console.log(e.target.value);
         setKeyword(e.target.value);
     }
 
-    useEffect(() => {
-        console.log('in here');
-        setPage(1);
-        refetch();
-    }, [keyword, refetch]);
-    
+    const handleCloseAddTrip = () =>{
+        setShowAddTrip(false);
+    }
+       
     return(
         <>
+            <AddTripModal show={showAddTrip} handleClose={handleCloseAddTrip} />
             <Row className="mt-4">
-                <Col lg="4">
+                <Col lg={12}>
                     <Form>
                         <Form.Group as={Row}>                            
-                            <Col>
+                            <Col lg={4}>
                                 <Form.Control type="input" placeholder="Search by Name or Destination" onChange={searchChanged}/>
+                            </Col>
+                            <Col lg={7}></Col>
+                            <Col lg={1}>
+                                <Button variant="primary" onClick={() => setShowAddTrip(true)}>Add Trip</Button>
                             </Col>
                         </Form.Group>
                     </Form>
