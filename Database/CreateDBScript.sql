@@ -21,3 +21,22 @@ create table dbo.Trips
 	EndDate datetime2(7) null, -- if not ended, this will be null
 	Rating smallint not null
 );
+
+create table dbo.Attractions
+(
+	Id bigint not null primary key identity(1,1),
+	AttractionName varchar(max) not null,
+	[Description] varchar(max)  not null,
+	[Location] varchar(500) not null,
+	Cost decimal(10,2) not null,
+	TripId bigint foreign key references dbo.Trips(Id)
+);
+
+create table dbo.Restaurants
+(
+	Id bigint not null primary key identity(1, 1),
+	RestaurantName varchar(500) not null,
+	Style varchar(255) not null,
+	CostRange varchar(255) not null,
+	TripId bigint foreign key references dbo.Trips(Id)
+);
