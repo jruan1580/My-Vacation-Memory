@@ -25,6 +25,8 @@ namespace VacationManagement.API
 
             services.AddScoped<IDocumentExecuter, DocumentExecuter>();
             services.AddSingleton<ITripsRepository, TripsRepository>();
+            services.AddSingleton<IAttractionsRepository, AttractionsRepository>();
+            services.AddSingleton<IRestaurantRepository, RestaurantRepository>();
             services.AddScoped<IMyTripsService, MyTripsService>();
             services.AddScoped<TripType>();
             services.AddScoped<AddTripInputType>();
