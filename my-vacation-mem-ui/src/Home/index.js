@@ -75,7 +75,7 @@ function Home(){
                             (!loading && error === undefined) &&
                                 (data.trips.map(t => {
                                     return (
-                                    <tr key={t.id}>
+                                    <tr style={{cursor:"pointer"}} key={t.id} onClick={() => window.location.href = "/trip/" + t.id}>
                                         <td>{t.name}</td>
                                         <td>{t.destination}</td>
                                         <td>{t.start}</td>
