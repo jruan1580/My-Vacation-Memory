@@ -37,6 +37,7 @@ create table dbo.Restaurants
 	Id bigint not null primary key identity(1, 1),
 	RestaurantName varchar(500) not null,
 	Style varchar(255) not null,
-	CostRange varchar(255) not null,
+	LowerCostRange decimal(10,2) not null,
+	UpperCostRange decimal(10, 2) not null,	
 	TripId bigint foreign key references dbo.Trips(Id)
 );
