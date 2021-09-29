@@ -59,6 +59,11 @@ namespace VacationManagement.Infrastructure.Repository.Entities
 
             modelBuilder.Entity<Restaurant>(entity =>
             {
+                entity.Property(e => e.Location)
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.LowerCostRange).HasColumnType("decimal(10, 2)");
 
                 entity.Property(e => e.RestaurantName)

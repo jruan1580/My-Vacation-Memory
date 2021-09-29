@@ -8,7 +8,13 @@ using VacationManagement.Infrastructure.Repository.Entities;
 
 namespace VacationManagement.Domain.Services
 {
-    public class TripRestaurantService
+    public interface ITripRestaurantService
+    {
+        Task AddRestaurantToTrip(int tripId, string name, string location, string style, decimal lowerCost, decimal upperCost);
+        Task<List<TripRestaurant>> GetRestaurantsByTripId(int tripId);
+    }
+
+    public class TripRestaurantService : ITripRestaurantService
     {
         private readonly IRestaurantRepository _restaurantRepository;
         private readonly IMapper _mapper;
@@ -35,7 +41,7 @@ namespace VacationManagement.Domain.Services
         {
             HasValidParametersToAddTrip(tripId, name, location, style, lowerCost, upperCost);
 
-            await _restaurantRepository.AddRestaurantToTrip(tripId, name, style, lowerCost, upperCost);
+            await _restaurantRepository.AddRestaurantToTrip(tripId, name, style, lowerCost, upperCost, location);
         }
 
         private void HasValidParametersToAddTrip(int tripId, string name, string location, string style, decimal lowerCost, decimal upperCost)
@@ -69,7 +75,7 @@ namespace VacationManagement.Domain.Services
             {
                 throw new ArgumentException("Lower cost must be smaller than upper cost");
             }
-         
+
             if (string.IsNullOrEmpty(style))
             {
                 throw new ArgumentException("Style is not provided.");
