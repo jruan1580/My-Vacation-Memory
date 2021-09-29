@@ -39,5 +39,6 @@ create table dbo.Restaurants
 	Style varchar(255) not null,
 	LowerCostRange decimal(10,2) not null,
 	UpperCostRange decimal(10, 2) not null,	
+	Location varchar(500) not null,
 	TripId bigint foreign key references dbo.Trips(Id)
 );
