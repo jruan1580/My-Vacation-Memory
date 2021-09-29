@@ -10,6 +10,10 @@ namespace VacationManagement.Domain.Mapper
         {
             CreateMap<MyTrip, Trip>();
             CreateMap<Trip, MyTrip>();
+
+            CreateMap<Restaurant, TripRestaurant>();
+
+            CreateMap<Attraction, TripAttraction>();
         }
     }
 }
