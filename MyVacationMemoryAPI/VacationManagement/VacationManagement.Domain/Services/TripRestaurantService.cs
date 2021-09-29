@@ -31,14 +31,14 @@ namespace VacationManagement.Domain.Services
             return _mapper.Map<List<Restaurant>, List<TripRestaurant>>(restaurants);
         }
 
-        public async Task AddRestaurantToTrip(int tripId, string name, string location, string costRange, string style)
+        public async Task AddRestaurantToTrip(int tripId, string name, string location, string style, decimal lowerCost, decimal upperCost)
         {
-            HasValidParametersToAddTrip(tripId, name, location, costRange, style);
+            HasValidParametersToAddTrip(tripId, name, location, style, lowerCost, upperCost);
 
-            await _restaurantRepository.AddRestaurantToTrip(tripId, name, style, costRange);
+            await _restaurantRepository.AddRestaurantToTrip(tripId, name, style, lowerCost, upperCost);
         }
 
-        private void HasValidParametersToAddTrip(int tripId, string name, string location, string costRange, string style)
+        private void HasValidParametersToAddTrip(int tripId, string name, string location, string style, decimal lowerCost, decimal upperCost)
         {
             if (tripId < 0)
             {
@@ -50,11 +50,26 @@ namespace VacationManagement.Domain.Services
                 throw new ArgumentException("Must pass in a name");
             }
 
-            if (string.IsNullOrEmpty(costRange))
+            if (string.IsNullOrEmpty(location))
             {
-                throw new ArgumentException("Cost range is not provided");
+                throw new ArgumentException("Location was not provided");
             }
 
+            if (lowerCost < 0)
+            {
+                throw new ArgumentException("Cannot have a negative lower cost");
+            }
+
+            if (upperCost < 0)
+            {
+                throw new ArgumentException("Cannot have a negative upper cost");
+            }
+
+            if (lowerCost >= upperCost)
+            {
+                throw new ArgumentException("Lower cost must be smaller than upper cost");
+            }
+         
             if (string.IsNullOrEmpty(style))
             {
                 throw new ArgumentException("Style is not provided.");
