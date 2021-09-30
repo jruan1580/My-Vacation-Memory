@@ -7,6 +7,6 @@
         public string Description { get; set; }
         public string Location { get; set; }
         public decimal Cost { get; set; }
-        public long? TripId { get; set; }
+        public long TripId { get; set; }
     }
 }

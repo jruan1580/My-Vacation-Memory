@@ -8,13 +8,13 @@ namespace VacationManagement.Infrastructure.Repository
 {
     public interface IAttractionsRepository
     {
-        Task AddAttractions(string name, string description, string location, decimal costs, int tripId);
-        Task<List<Attraction>> GetAttractionsByTripId(int tripId);
+        Task AddAttractions(string name, string description, string location, decimal costs, long tripId);
+        Task<List<Attraction>> GetAttractionsByTripId(long tripId);
     }
 
     public class AttractionsRepository : IAttractionsRepository
     {
-        public async Task<List<Attraction>> GetAttractionsByTripId(int tripId)
+        public async Task<List<Attraction>> GetAttractionsByTripId(long tripId)
         {
             using (var context = new MyVacationMemoryContext())
             {
@@ -24,7 +24,7 @@ namespace VacationManagement.Infrastructure.Repository
             }
         }
 
-        public async Task AddAttractions(string name, string description, string location, decimal costs, int tripId)
+        public async Task AddAttractions(string name, string description, string location, decimal costs, long tripId)
         {
             using (var context = new MyVacationMemoryContext())
             {

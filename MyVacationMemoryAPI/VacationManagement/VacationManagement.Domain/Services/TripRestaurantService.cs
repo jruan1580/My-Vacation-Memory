@@ -10,8 +10,8 @@ namespace VacationManagement.Domain.Services
 {
     public interface ITripRestaurantService
     {
-        Task AddRestaurantToTrip(int tripId, string name, string location, string style, decimal lowerCost, decimal upperCost);
-        Task<List<TripRestaurant>> GetRestaurantsByTripId(int tripId);
+        Task AddRestaurantToTrip(long tripId, string name, string location, string style, decimal lowerCost, decimal upperCost);
+        Task<List<TripRestaurant>> GetRestaurantsByTripId(long tripId);
     }
 
     public class TripRestaurantService : ITripRestaurantService
@@ -25,7 +25,7 @@ namespace VacationManagement.Domain.Services
             _mapper = mapper;
         }
 
-        public async Task<List<TripRestaurant>> GetRestaurantsByTripId(int tripId)
+        public async Task<List<TripRestaurant>> GetRestaurantsByTripId(long tripId)
         {
             if (tripId < 0)
             {
@@ -37,14 +37,14 @@ namespace VacationManagement.Domain.Services
             return _mapper.Map<List<Restaurant>, List<TripRestaurant>>(restaurants);
         }
 
-        public async Task AddRestaurantToTrip(int tripId, string name, string location, string style, decimal lowerCost, decimal upperCost)
+        public async Task AddRestaurantToTrip(long tripId, string name, string location, string style, decimal lowerCost, decimal upperCost)
         {
             HasValidParametersToAddTrip(tripId, name, location, style, lowerCost, upperCost);
 
             await _restaurantRepository.AddRestaurantToTrip(tripId, name, style, lowerCost, upperCost, location);
         }
 
-        private void HasValidParametersToAddTrip(int tripId, string name, string location, string style, decimal lowerCost, decimal upperCost)
+        private void HasValidParametersToAddTrip(long tripId, string name, string location, string style, decimal lowerCost, decimal upperCost)
         {
             if (tripId < 0)
             {

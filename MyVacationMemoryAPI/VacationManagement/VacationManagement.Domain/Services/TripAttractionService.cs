@@ -10,9 +10,8 @@ namespace VacationManagement.Domain.Services
 {
     public interface ITripAttractionService
     {
-        Task AddTripAttraction(int tripId, string name, string description, string location, decimal costs);
-        Task<List<TripAttraction>> GetAttractionsByTripId(int tripId);
-        void ValidateAddTripAttractionParams(int tripId, string name, string description, string location, decimal costs);
+        Task AddTripAttraction(long tripId, string name, string description, string location, decimal costs);
+        Task<List<TripAttraction>> GetAttractionsByTripId(long tripId);
     }
 
     public class TripAttractionService : ITripAttractionService
@@ -26,7 +25,7 @@ namespace VacationManagement.Domain.Services
             _mapper = mapper;
         }
 
-        public async Task<List<TripAttraction>> GetAttractionsByTripId(int tripId)
+        public async Task<List<TripAttraction>> GetAttractionsByTripId(long tripId)
         {
             if (tripId < 0)
             {
@@ -38,14 +37,14 @@ namespace VacationManagement.Domain.Services
             return _mapper.Map<List<Attraction>, List<TripAttraction>>(trips);
         }
 
-        public async Task AddTripAttraction(int tripId, string name, string description, string location, decimal costs)
+        public async Task AddTripAttraction(long tripId, string name, string description, string location, decimal costs)
         {
             ValidateAddTripAttractionParams(tripId, name, description, location, costs);
 
             await _attractionRepository.AddAttractions(name, description, location, costs, tripId);
         }
 
-        public void ValidateAddTripAttractionParams(int tripId, string name, string description, string location, decimal costs)
+        private void ValidateAddTripAttractionParams(long tripId, string name, string description, string location, decimal costs)
         {
             if (tripId < 0)
             {

@@ -10,13 +10,13 @@ namespace VacationManagement.Infrastructure.Repository
 {
     public interface IRestaurantRepository
     {
-        Task AddRestaurantToTrip(int tripId, string name, string style, decimal lowerCost, decimal upperCost, string location);
-        Task<List<Restaurant>> GetRestaurantsByTripId(int tripId);
+        Task AddRestaurantToTrip(long tripId, string name, string style, decimal lowerCost, decimal upperCost, string location);
+        Task<List<Restaurant>> GetRestaurantsByTripId(long tripId);
     }
 
     public class RestaurantRepository : IRestaurantRepository
     {
-        public async Task<List<Restaurant>> GetRestaurantsByTripId(int tripId)
+        public async Task<List<Restaurant>> GetRestaurantsByTripId(long tripId)
         {
             using (var context = new MyVacationMemoryContext())
             {
@@ -26,7 +26,7 @@ namespace VacationManagement.Infrastructure.Repository
             }
         }
 
-        public async Task AddRestaurantToTrip(int tripId, string name, string style, decimal lowerCost, decimal upperCost, string location)
+        public async Task AddRestaurantToTrip(long tripId, string name, string style, decimal lowerCost, decimal upperCost, string location)
         {
             var newRest = new Restaurant()
             {
