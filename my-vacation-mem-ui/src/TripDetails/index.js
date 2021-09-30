@@ -1,16 +1,37 @@
-function TripDetails(){
+import { useParams } from "react-router-dom";
+import { GET_TRIPS_BY_ID} from "../GqlQueries/TripsQuery";
+import { useQuery} from "@apollo/client";
+import { useState } from "react";
+
+function TripDetails(){    
+    const { id } = useParams();
+    const { loading, error, data } = useQuery(GET_TRIPS_BY_ID, {
+        variables : { id: parseInt(id) }
+    });   
+
+    const [isUpdateTripView, setUpdateTripView] = useState(false);
+
+    return(
+        <>            
+           {(!isUpdateTripView && !loading && !error) && <ViewOnly tripObj={data.trip}/>}
+        </>
+    )
+}
+
+function ViewOnly({ tripObj }){
+    console.log(tripObj);
     return(
         <>
             <div className="mt-4">
-                <h3>Trip to Japan</h3>
+                <h3>{ tripObj.name }</h3>
             </div>
             <div className="mt-1">
-                <span><b>Start:</b> 2019-07-03</span><br/>
-                <span><b>End:</b> 2019-07-03</span><br/>
-                <span><b>Rating:</b> 4/5</span>
+                <span><b>Start:</b> { tripObj.start }</span><br/>
+                <span><b>End:</b> { tripObj.end }</span><br/>
+                <span><b>Rating:</b> { tripObj.rating }/5</span>
             </div>
             <div className="mt-1">
-                <p><b>Description:</b> Went to Florence, Pisa, Venice, and Rome.</p>
+                <p><b>Description:</b> { tripObj.description }</p>
             </div>
         </>
     )

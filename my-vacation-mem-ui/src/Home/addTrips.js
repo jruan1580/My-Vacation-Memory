@@ -48,9 +48,9 @@ function AddTripModal({show, handleClose}){
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleSubmit}>
-                        {loading && <Alert variant="info">Processing</Alert>}
-                        {error && <Alert variant="danger">{error.message}</Alert>}
-                        {success && <Alert variant="success">Successfully added trip.</Alert>}
+                        {(loading && !error && !success) && <Alert variant="info">Processing</Alert>}
+                        {(error && !loading && !success) && <Alert variant="danger">{error.message}</Alert>}
+                        {(success && !loading && !error) && <Alert variant="success">Successfully added trip.</Alert>}
                         <Form.Group>
                             <Form.Label>Trip Name</Form.Label>
                             <Form.Control type="text" name="tripName" required/>
