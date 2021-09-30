@@ -31,7 +31,8 @@ export const GET_TRIPS_BY_ID = gql`
 export const ADD_TRIPS = gql`
   mutation AddNewTrip($newTrip: NewTripInput!){
     addTrip(newTrip: $newTrip){
-      id
+      success,
+      message
     }
   }
 `;

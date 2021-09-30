@@ -21,10 +21,8 @@ function App() {
             </Route>
             <Route path="/trip/:id" children={ <TripDetails /> }></Route>
           </Switch>
-        </Container>
-        
-      </Router>
-      
+        </Container>        
+      </Router>      
     </>    
   );
 }
