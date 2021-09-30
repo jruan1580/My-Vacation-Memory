@@ -17,6 +17,8 @@ namespace VacationManagement.Infrastructure.Repository.Entities
         {
         }
 
+        public virtual DbSet<Attraction> Attractions { get; set; }
+        public virtual DbSet<Restaurant> Restaurants { get; set; }
         public virtual DbSet<Trip> Trips { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -31,6 +33,56 @@ namespace VacationManagement.Infrastructure.Repository.Entities
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
+
+            modelBuilder.Entity<Attraction>(entity =>
+            {
+                entity.Property(e => e.AttractionName)
+                    .IsRequired()
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Cost).HasColumnType("decimal(10, 2)");
+
+                entity.Property(e => e.Description)
+                    .IsRequired()
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Location)
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Trip)
+                    .WithMany(p => p.Attractions)
+                    .HasForeignKey(d => d.TripId)
+                    .HasConstraintName("FK__Attractio__TripI__398D8EEE");
+            });
+
+            modelBuilder.Entity<Restaurant>(entity =>
+            {
+                entity.Property(e => e.Location)
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.LowerCostRange).HasColumnType("decimal(10, 2)");
+
+                entity.Property(e => e.RestaurantName)
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Style)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UpperCostRange).HasColumnType("decimal(10, 2)");
+
+                entity.HasOne(d => d.Trip)
+                    .WithMany(p => p.Restaurants)
+                    .HasForeignKey(d => d.TripId)
+                    .HasConstraintName("FK__Restauran__TripI__3C69FB99");
+            });
 
             modelBuilder.Entity<Trip>(entity =>
             {
