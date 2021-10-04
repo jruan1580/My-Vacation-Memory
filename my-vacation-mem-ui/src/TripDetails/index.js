@@ -2,6 +2,8 @@ import { useParams } from "react-router-dom";
 import { GET_TRIPS_BY_ID} from "../GqlQueries/TripsQuery";
 import { useQuery} from "@apollo/client";
 import { useState } from "react";
+import Row from "react-bootstrap/Row";
+import TripAttractions from "./tripAttractions";
 
 function TripDetails(){    
     const { id } = useParams();
@@ -13,7 +15,12 @@ function TripDetails(){
 
     return(
         <>            
-           {(!isUpdateTripView && !loading && !error) && <ViewOnly tripObj={data.trip}/>}
+            <Row>
+                {(!isUpdateTripView && !loading && !error) && <ViewOnly tripObj={data.trip}/>}
+            </Row>
+            <Row>
+                <TripAttractions tripId={id} />
+            </Row>
         </>
     )
 }
@@ -36,5 +43,6 @@ function ViewOnly({ tripObj }){
         </>
     )
 }
+
 
 export default TripDetails;
