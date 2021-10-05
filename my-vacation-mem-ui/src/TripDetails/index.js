@@ -4,6 +4,7 @@ import { useQuery} from "@apollo/client";
 import { useState } from "react";
 import Row from "react-bootstrap/Row";
 import TripAttractions from "./tripAttractions";
+import TripRestaurants from "./tripRestaurants";
 
 function TripDetails(){    
     const { id } = useParams();
@@ -20,6 +21,9 @@ function TripDetails(){
             </Row>
             <Row>
                 <TripAttractions tripId={id} />
+            </Row>
+            <Row>
+                <TripRestaurants tripId={id}/>
             </Row>
         </>
     )

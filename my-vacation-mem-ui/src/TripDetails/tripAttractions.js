@@ -3,13 +3,15 @@ import { GET_TRIPS_ATTRACTIONS } from "../GqlQueries/TripAttractionsQuery"
 import Table from "react-bootstrap/Table";
 import Pagination from "react-bootstrap/Pagination";
 import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Button from "react-bootstrap/Button";
 import { useState, useEffect } from "react";
 
 function TripAttractions({ tripId }){
     const offset = 5;
     const [page, setCurrentPage] = useState(1);
     const {loading, error, data, refetch} = useQuery(GET_TRIPS_ATTRACTIONS, {
-        variables: { tripId, page, offset }
+        variables: { tripId: parseInt(tripId), page, offset }
     });
 
     useEffect(() =>{
@@ -18,6 +20,11 @@ function TripAttractions({ tripId }){
 
     return(
         <>
+            <Row className="mb-3">
+                <Col lg={4}>
+                    <Button>Add Attraction</Button>
+                </Col>
+            </Row>
             <Row>
                 {(!loading && !error) && <AttractionsTable attractions={data.tripAttractions }/> }        
             </Row><br/>        
