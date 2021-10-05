@@ -23,7 +23,7 @@ function TripRestaurants({ tripId }){
         <>
              <Row className="mb-3">
                 <Col lg={4}>
-                    <Button>Add Attraction</Button>
+                    <Button>Add Restaurant</Button>
                 </Col>
             </Row>
             <Row>
