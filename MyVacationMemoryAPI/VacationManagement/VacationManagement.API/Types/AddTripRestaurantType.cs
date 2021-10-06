@@ -7,7 +7,6 @@ namespace VacationManagement.API.Types
     {
         public AddTripRestaurantType()
         {
-            Field(r => r.Id, type: typeof(NonNullGraphType<BigIntGraphType>)).Name("id");
             Field(r => r.RestaurantName, type: typeof(NonNullGraphType<StringGraphType>)).Name("name");
             Field(r => r.Location, type: typeof(NonNullGraphType<StringGraphType>)).Name("address");
             Field(r => r.Style, type: typeof(NonNullGraphType<StringGraphType>)).Name("cuisine");

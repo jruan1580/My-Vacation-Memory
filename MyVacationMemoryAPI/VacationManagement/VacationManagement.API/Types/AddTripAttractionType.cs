@@ -7,7 +7,6 @@ namespace VacationManagement.API.Types
     {
         public AddTripAttractionType()
         {
-            Field(a => a.Id, type: typeof(NonNullGraphType<BigIntGraphType>)).Name("id");
             Field(a => a.AttractionName, type: typeof(NonNullGraphType<StringGraphType>)).Name("name");
             Field(a => a.Location, type: typeof(NonNullGraphType<StringGraphType>)).Name("address");
             Field(a => a.Cost, type: typeof(NonNullGraphType<StringGraphType>)).Name("costs");

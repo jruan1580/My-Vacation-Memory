@@ -14,3 +14,8 @@ export const GET_TRIPS_RESTAURANTS = gql`
     }
 `;
 
+export const ADD_TRIP_RESTAURANT = gql`
+    mutation AddRestaurantToTrip($newRestaurant: AddTripRestaurantType!){
+        addTripRestaurant(newRestaurant: $newRestaurant)
+    }
+`;

@@ -12,3 +12,9 @@ export const GET_TRIPS_ATTRACTIONS = gql`
         tripAttractionTotal(tripId: $tripId)
     }
 `;
+
+export  const ADD_TRIP_ATTRACTION = gql`
+    mutation AddTripAttraction($newAttraction: AddTripAttractionType!){
+        addTripAttraction(newAttraction: $newAttraction)
+    }
+`;
