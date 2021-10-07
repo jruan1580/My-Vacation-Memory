@@ -13,6 +13,7 @@ import Modal from "react-bootstrap/Modal";
 function TripRestaurants({ tripId }){
     const [page, setCurrentPage] = useState(1);
     const [showAddModal, toggleAddModal] = useState(false);
+    const [restaurants, setRestaurants] = useState([]);
 
     const offset = 5;
 
@@ -20,9 +21,15 @@ function TripRestaurants({ tripId }){
         variables: { tripId: parseInt(tripId), page, offset}
     });
 
+    useEffect(() => {
+        if (!loading && error === undefined && data !== undefined){
+            setRestaurants(data.tripRestaurants);
+        }
+    }, [data, loading, error]);
+
     useEffect(() =>{
         refetch();
-    }, [page, refetch])
+    }, [page, refetch]);
 
     return(
         <>
@@ -33,7 +40,7 @@ function TripRestaurants({ tripId }){
                 </Col>
             </Row>
             <Row>
-                { (!loading && !error) && <RestaurantsTable restaurants={ data.tripRestaurants } /> }
+                { (!loading && !error) && <RestaurantsTable restaurants={ restaurants } /> }
             </Row>
             <br/>
             <Row>
@@ -81,7 +88,8 @@ function RestaurantsTable({ restaurants }){
 
 function AddRestaurantModal({ tripId, show, toggleAddModal, refetch }){
     const [addRestaurant, {data, loading, error}] = useMutation(ADD_TRIP_RESTAURANT);
-    
+    const [success, setSuccess] = useState(false);
+
     const onSubmit = (e) =>{
         e.preventDefault();
 
@@ -95,23 +103,32 @@ function AddRestaurantModal({ tripId, show, toggleAddModal, refetch }){
         };
 
         addRestaurant({variables: { newRestaurant } });
+    }
 
-        if (!loading && !error){
-            e.target.reset();
+    useEffect(() =>{
+        if (!loading && error === undefined && data !== undefined){
+            document.getElementById("addRestaurantForm").reset();
+            setSuccess(true);
             refetch();
         }
+    }, [data, loading, error, refetch])
+
+    const closeModal = () =>{
+        toggleAddModal(false);
+        setSuccess(false);
     }
 
     return(
         <>
-            <Modal show={show} onHide={() => toggleAddModal(false)}>
+            <Modal show={show} onHide={closeModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Add Attraction</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form onSubmit={onSubmit}>
-                        {(loading && !error) && <Alert variant="info">Processing</Alert>}
-                        {(error && !loading) && <Alert variant="danger">{error.message}</Alert>}                        
+                    <Form onSubmit={onSubmit} id="addRestaurantForm">
+                        {(loading && error === undefined) && <Alert variant="info">Processing</Alert>}
+                        {(error !== undefined && !loading) && <Alert variant="danger">{error.message}</Alert>}
+                        {success && <Alert variant="success">Successfully Added</Alert>}                        
                         <Form.Group>
                             <Form.Label>Attraction Name</Form.Label>
                             <Form.Control type="text" name="restName" required/>
@@ -136,7 +153,7 @@ function AddRestaurantModal({ tripId, show, toggleAddModal, refetch }){
                         </Form.Group>                                                  
                         <Form.Group className="mt-4">
                             <Button variant="primary" type="submit">Add</Button>{' '}
-                            <Button variant="danger" onClick={() => toggleAddModal(false)}>Cancel</Button>
+                            <Button variant="danger" onClick={() => closeModal()}>Cancel</Button>
                         </Form.Group>    
                     </Form>
                 </Modal.Body>

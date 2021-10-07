@@ -14,10 +14,18 @@ function TripAttractions({ tripId }){
     const offset = 5;
     const [page, setCurrentPage] = useState(1);
     const [showAddModal, toggleAddModal] = useState(false);
+    const [attractions, setAttractions] = useState([]);
 
     const {loading, error, data, refetch} = useQuery(GET_TRIPS_ATTRACTIONS, {
         variables: { tripId: parseInt(tripId), page, offset }
     });
+
+    useEffect(() =>{       
+        if (data !== undefined && !loading && error === undefined){
+            setAttractions(data.tripAttractions);
+        }
+        
+    }, [loading, error, data]);
 
     useEffect(() =>{
         refetch();
@@ -32,7 +40,7 @@ function TripAttractions({ tripId }){
                 </Col>
             </Row>
             <Row>
-                {(!loading && !error) && <AttractionsTable attractions={data.tripAttractions }/> }        
+                {(!loading && !error) && <AttractionsTable attractions={ attractions }/> }        
             </Row><br/>        
             <Pagination>
                 {(page !== 1 && !loading && error === undefined && data.tripAttractions.length > 0) && <Pagination.First onClick={() => setCurrentPage(1)} />}
@@ -44,7 +52,7 @@ function TripAttractions({ tripId }){
     );
 }
 
-function AttractionsTable({ attractions }){    
+function AttractionsTable({ attractions }){ 
     return(
         <>
             <Table responsive striped bordered hover>
@@ -77,6 +85,7 @@ function AttractionsTable({ attractions }){
 
 function AddAttractionModal({ tripId, show, toggleAddModal, refetch }){
     const [addTripAttraction, {data, loading, error}] = useMutation(ADD_TRIP_ATTRACTION);
+    const [success, setSuccess] = useState(false);
 
     const onSubmit = (e) =>{
         e.preventDefault();
@@ -89,23 +98,33 @@ function AddAttractionModal({ tripId, show, toggleAddModal, refetch }){
             tripId: parseInt(tripId)
         };    
 
-        addTripAttraction({variables: { newAttraction } });
+        addTripAttraction({variables: { newAttraction } });      
+    }
 
-        if (!loading && !error){
-            e.target.reset();
+    useEffect(() =>{        
+        if (!loading && error === undefined && data !== undefined){
+            setSuccess(true);
+            document.getElementById("addAttractionsForm").reset();
             refetch();
         }
+    }, [loading, error, data, refetch]);
+
+    const closeModal = () =>{
+        setSuccess(false);
+        toggleAddModal(false);
     }
+
     return(
         <>
-            <Modal show={show} onHide={() => toggleAddModal(false)}>
+            <Modal show={show} onHide={closeModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Add Attraction</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form onSubmit={onSubmit}>
-                        {(loading && !error) && <Alert variant="info">Processing</Alert>}
-                        {(error && !loading) && <Alert variant="danger">{error.message}</Alert>}                        
+                    <Form onSubmit={onSubmit} id="addAttractionsForm">
+                        {(loading && error === undefined) && <Alert variant="info">Processing</Alert>}
+                        {(error !== undefined && !loading) && <Alert variant="danger">{error.message}</Alert>}   
+                        {success && <Alert variant="success">Successfully Added </Alert>}                     
                         <Form.Group>
                             <Form.Label>Attraction Name</Form.Label>
                             <Form.Control type="text" name="attractionName" required/>
@@ -124,7 +143,7 @@ function AddAttractionModal({ tripId, show, toggleAddModal, refetch }){
                         </Form.Group>
                         <Form.Group className="mt-4">
                             <Button variant="primary" type="submit">Add</Button>{' '}
-                            <Button variant="danger" onClick={() => toggleAddModal(false)}>Cancel</Button>
+                            <Button variant="danger" onClick={() => closeModal()}>Cancel</Button>
                         </Form.Group>    
                     </Form>
                 </Modal.Body>

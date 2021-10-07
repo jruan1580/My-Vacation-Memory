@@ -26,7 +26,7 @@ function TripDetails(){
             <Row>
                 <TripAttractions tripId={id} />
             </Row>
-            <Row>
+            <Row className="mb-4">
                 <TripRestaurants tripId={id}/>
             </Row>
         </>

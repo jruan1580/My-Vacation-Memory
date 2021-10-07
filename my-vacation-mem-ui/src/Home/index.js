@@ -14,6 +14,7 @@ function Home(){
     const [page, setPage] = useState(1);    
     const [keyword, setKeyword] = useState("");
     const [showAddTrip, setShowAddTrip] = useState(false);
+    const [trips, setTrips] = useState([]);
 
     const { loading, error, data, refetch } = useQuery(GET_TRIPS, {
         variables : { page, offset, keyword }
@@ -23,11 +24,11 @@ function Home(){
         setPage(1);
     }, [keyword]);
 
-    useEffect(() =>{
-        if (!showAddTrip){
-            refetch();
+    useEffect(() => {
+        if (data !== undefined && !loading && error === undefined){
+            setTrips(data.trips);
         }
-    }, [showAddTrip, refetch]);
+    }, [data, loading, error]);
 
     useEffect(() => {
         refetch();
@@ -43,7 +44,7 @@ function Home(){
        
     return(
         <>
-            <AddTripModal show={showAddTrip} handleClose={handleCloseAddTrip} />
+            <AddTripModal show={showAddTrip} handleClose={handleCloseAddTrip} refetch={refetch}/>
             <Row className="mt-4">
                 <Col lg={12}>
                     <Form>
@@ -73,7 +74,7 @@ function Home(){
                     <tbody>
                         {
                             (!loading && error === undefined) &&
-                                (data.trips.map(t => {
+                                (trips.map(t => {
                                     return (
                                     <tr style={{cursor:"pointer"}} key={t.id} onClick={() => window.location.href = "/trip/" + t.id}>
                                         <td>{t.name}</td>
