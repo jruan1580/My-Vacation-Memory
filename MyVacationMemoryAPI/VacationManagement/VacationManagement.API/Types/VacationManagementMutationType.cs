@@ -24,6 +24,18 @@ namespace VacationManagement.API.Types
                 });
 
             FieldAsync<BooleanGraphType>(
+                name: "updateTrip",
+                arguments: new QueryArguments(new QueryArgument<UpdateTripInputType> { Name = "updatedTrip" }),
+                resolve: async context =>
+                {
+                    var updatedTrip = context.GetArgument<MyTrip>("updatedTrip");
+
+                    await myTripsService.UpdateTrip(updatedTrip.Id, updatedTrip.TripName, updatedTrip.TripDescription, updatedTrip.Destination, updatedTrip.StartDate, updatedTrip.EndDate, updatedTrip.Rating);
+
+                    return true;
+                });              
+
+            FieldAsync<BooleanGraphType>(
                 name: "addTripAttraction",
                 arguments: new QueryArguments(new QueryArgument<AddTripAttractionType> { Name = "newAttraction" }),
                 resolve: async context =>
@@ -47,7 +59,7 @@ namespace VacationManagement.API.Types
 
                     return true;                    
                 }
-            );
+            );           
         }
     }
 }

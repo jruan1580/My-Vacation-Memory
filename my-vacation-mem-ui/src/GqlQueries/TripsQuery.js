@@ -20,6 +20,7 @@ export const GET_TRIPS_BY_ID = gql`
         id,
         name,
         description,
+        destination,
         name,
         start,
         end,
@@ -31,5 +32,11 @@ export const GET_TRIPS_BY_ID = gql`
 export const ADD_TRIPS = gql`
   mutation AddNewTrip($newTrip: NewTripInput!){
     addTrip(newTrip: $newTrip)
+  }
+`;
+
+export const UPDATE_TRIP = gql`
+  mutation UpdateTrip($updatedTrip: UpdateTripInput!){
+    updateTrip(updatedTrip: $updatedTrip)
   }
 `;

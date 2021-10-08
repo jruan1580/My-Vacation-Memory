@@ -32,6 +32,7 @@ namespace VacationManagement.API
             services.AddScoped<ITripAttractionService, TripAttractionService>();
             services.AddScoped<TripType>();
             services.AddScoped<AddTripInputType>();
+            services.AddScoped<UpdateTripInputType>();
             services.AddScoped<TripAttractionType>();
             services.AddScoped<TripRestaurantType>();
             services.AddScoped<AddTripAttractionType>();
