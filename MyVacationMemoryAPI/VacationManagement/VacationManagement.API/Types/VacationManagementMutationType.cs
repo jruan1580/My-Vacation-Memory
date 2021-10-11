@@ -1,6 +1,5 @@
 ﻿using GraphQL;
 using GraphQL.Types;
-using System;
 using VacationManagement.Domain.Models;
 using VacationManagement.Domain.Services;
 
@@ -12,62 +11,55 @@ namespace VacationManagement.API.Types
             ITripAttractionService tripAttractionService,
             ITripRestaurantService tripRestaurantService)
         {
-            FieldAsync<GenericFailedResponseType>("addTrip", 
-                "adds a new trip",
-                new QueryArguments(new QueryArgument<AddTripInputType> { Name = "newTrip" }),
-                async context =>
+            FieldAsync<BooleanGraphType>(
+                name: "addTrip",                 
+                arguments: new QueryArguments(new QueryArgument<AddTripInputType> { Name = "newTrip" }),
+                resolve: async context =>
                 {
                     var newTrip = context.GetArgument<MyTrip>("newTrip");
-                    try
-                    {
-                        await myTripsService.AddNewTrip(newTrip.TripName, newTrip.TripDescription, newTrip.Destination, newTrip.StartDate, newTrip.EndDate, newTrip.Rating);
 
-                        return new GenericErrorResponse() { Success = true, Message = string.Empty };
-                    }
-                    catch(Exception e)
-                    {
-                        return new GenericErrorResponse() { Success = false, Message = e.Message };
-                    }
+                    await myTripsService.AddNewTrip(newTrip.TripName, newTrip.TripDescription, newTrip.Destination, newTrip.StartDate, newTrip.EndDate, newTrip.Rating);
+
+                    return true;
                 });
 
-            FieldAsync<GenericFailedResponseType>(
+            FieldAsync<BooleanGraphType>(
+                name: "updateTrip",
+                arguments: new QueryArguments(new QueryArgument<UpdateTripInputType> { Name = "updatedTrip" }),
+                resolve: async context =>
+                {
+                    var updatedTrip = context.GetArgument<MyTrip>("updatedTrip");
+
+                    await myTripsService.UpdateTrip(updatedTrip.Id, updatedTrip.TripName, updatedTrip.TripDescription, updatedTrip.Destination, updatedTrip.StartDate, updatedTrip.EndDate, updatedTrip.Rating);
+
+                    return true;
+                });              
+
+            FieldAsync<BooleanGraphType>(
                 name: "addTripAttraction",
                 arguments: new QueryArguments(new QueryArgument<AddTripAttractionType> { Name = "newAttraction" }),
                 resolve: async context =>
                 {
                     var newAttraction = context.GetArgument<TripAttraction>("newAttraction");
 
-                    try
-                    {
-                        await tripAttractionService.AddTripAttraction(newAttraction.TripId, newAttraction.AttractionName, newAttraction.Description, newAttraction.Location, newAttraction.Cost);
+                    await tripAttractionService.AddTripAttraction(newAttraction.TripId, newAttraction.AttractionName, newAttraction.Description, newAttraction.Location, newAttraction.Cost);
 
-                        return new GenericErrorResponse() { Success = true, Message = string.Empty };
-                    }
-                    catch(Exception e)
-                    {
-                        return new GenericErrorResponse() { Success = false, Message = e.Message};
-                    }                                        
+                    return true;                                                     
                 }
             );
 
-            FieldAsync<GenericFailedResponseType>(
+            FieldAsync<BooleanGraphType>(
                 name: "addTripRestaurant",
                 arguments: new QueryArguments(new QueryArgument<NonNullGraphType<AddTripRestaurantType>> { Name = "newRestaurant"}),
                 resolve: async context =>
                 {
                     var newRestaurant = context.GetArgument<TripRestaurant>("newRestaurant");
-                    try
-                    {
-                        await tripRestaurantService.AddRestaurantToTrip(newRestaurant.TripId, newRestaurant.RestaurantName, newRestaurant.Location, newRestaurant.Style, newRestaurant.LowerCostRange, newRestaurant.UpperCostRange);
 
-                        return new GenericErrorResponse() { Success = true, Message = string.Empty };
-                    }
-                    catch(Exception e)
-                    {
-                        return new GenericErrorResponse() { Success = false, Message = e.Message };
-                    }
+                    await tripRestaurantService.AddRestaurantToTrip(newRestaurant.TripId, newRestaurant.RestaurantName, newRestaurant.Location, newRestaurant.Style, newRestaurant.LowerCostRange, newRestaurant.UpperCostRange);
+
+                    return true;                    
                 }
-            );
+            );           
         }
     }
 }

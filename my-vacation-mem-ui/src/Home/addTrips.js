@@ -8,7 +8,7 @@ import { useMutation } from "@apollo/client";
 import { ADD_TRIPS} from "../GqlQueries/TripsQuery";
 import { useState, useEffect } from "react";
 
-function AddTripModal({show, handleClose}){
+function AddTripModal({show, handleClose, refetch}){
     const [addTripsFunction, {data, loading, error}] = useMutation(ADD_TRIPS);
     const [success, setSuccess] = useState(false);
 
@@ -26,30 +26,31 @@ function AddTripModal({show, handleClose}){
         };    
 
         addTripsFunction({variables: { newTrip: newTripToAdd} });
-
-        if (!loading && !error){
-            e.target.reset();
-            setSuccess(true);
-        }
     }
 
-    useEffect(() =>{
-        if (show){
-            setSuccess(false);
-        }        
-    }, [show]);
+    useEffect(() => {
+        if (data !== undefined && !loading && error === undefined){
+            document.getElementById("addTripForm").reset()
+            setSuccess(true);
+            refetch();
+        }
+    }, [data, loading, error, refetch]);
 
+    const closeModal = () => {
+        setSuccess(false);
+        handleClose();
+    }
 
     return(
         <>
-            <Modal show={show} onHide={handleClose}>
+            <Modal show={show} onHide={closeModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Add Trip</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form onSubmit={handleSubmit}>
-                        {loading && <Alert variant="info">Processing</Alert>}
-                        {error && <Alert variant="danger">{error.message}</Alert>}
+                    <Form onSubmit={handleSubmit} id="addTripForm">
+                        {(loading && error === undefined) && <Alert variant="info">Processing</Alert>}
+                        {(error !== undefined && !loading) && <Alert variant="danger">{error.message}</Alert>}
                         {success && <Alert variant="success">Successfully added trip.</Alert>}
                         <Form.Group>
                             <Form.Label>Trip Name</Form.Label>

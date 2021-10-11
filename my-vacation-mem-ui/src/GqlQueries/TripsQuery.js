@@ -15,11 +15,12 @@ export const GET_TRIPS = gql`
 `;
 
 export const GET_TRIPS_BY_ID = gql`
-  query GetTripsById($id: Int!){
+  query GetTripsById($id: BigInt!){
       trip(id: $id){
         id,
         name,
         description,
+        destination,
         name,
         start,
         end,
@@ -30,8 +31,12 @@ export const GET_TRIPS_BY_ID = gql`
 
 export const ADD_TRIPS = gql`
   mutation AddNewTrip($newTrip: NewTripInput!){
-    addTrip(newTrip: $newTrip){
-      id
-    }
+    addTrip(newTrip: $newTrip)
+  }
+`;
+
+export const UPDATE_TRIP = gql`
+  mutation UpdateTrip($updatedTrip: UpdateTripInput!){
+    updateTrip(updatedTrip: $updatedTrip)
   }
 `;
