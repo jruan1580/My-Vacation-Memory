@@ -9,6 +9,7 @@ import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 import TripAttractions from "./tripAttractions";
 import TripRestaurants from "./tripRestaurants";
+import Loading from "../Loading";
 
 function TripDetails(){    
     const { id } = useParams();
@@ -28,7 +29,8 @@ function TripDetails(){
     }, [data, loading, error]);
 
     return(
-        <>            
+        <>          
+            {(loading && error === undefined) && <Loading />}  
             <Row className="mt-4">
                 {(!isUpdateTripView && !loading && !error) && <ViewOnly tripObj={tripObj} setUpdateTripView={setUpdateTripView}/>}
                 {isUpdateTripView && <EditOnly tripObj={tripObj} setUpdateTripView={setUpdateTripView} refetch={refetch} />}

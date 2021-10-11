@@ -8,6 +8,7 @@ import { GET_TRIPS } from "../GqlQueries/TripsQuery";
 import { useQuery } from "@apollo/client";
 import Button from "react-bootstrap/Button";
 import AddTripModal from "./addTrips";
+import Loading from "../Loading";
 
 function Home(){    
     const offset = 10;
@@ -44,6 +45,7 @@ function Home(){
        
     return(
         <>
+            {(loading && error === undefined) && <Loading />}
             <AddTripModal show={showAddTrip} handleClose={handleCloseAddTrip} refetch={refetch}/>
             <Row className="mt-4">
                 <Col lg={12}>
